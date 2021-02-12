@@ -1,169 +1,223 @@
 #include <iostream>
 using namespace std;
 
-struct subforwardlist
+class listt
 {
-	int data;
-	subforwardlist* next;
+private:
+    struct uzzel
+    {
+        int data; uzzel* next;
+        uzzel(int d)
+        {
+            data = d;
+            next = NULL;
+        }
+    };
+
+    uzzel* start;
+
+    void clear_work(uzzel** sfl);
+
+
+public:
+    listt ();
+
+    bool push_back(int d); //add element (d) to the end of the list
+
+    int pop_back(); //erase element from the end of the list + return it's data
+
+    bool push_forward(int d); //add element (d) to the beginning of the list
+
+    int pop_forward(); //erase element from the beginning of the list + return it's data
+
+    bool push_where(unsigned int where, int d); //add element (d) to (where)th position of the list
+
+    bool erase_where(unsigned int where); //erase element from (where)th position of the list
+
+    unsigned int size(); //check size of list
+
+    void clear(); //delete all elements (interface function, work function is private)
+
+    void print();
+
+    ~listt();
+
+    void mini_profiler();// mini-test to check working
 };
 
-bool init(subforwardlist** sfl)///////////////////////////working
+//----------------------------------Start of method descriptions-------------------------//
+
+void listt::clear_work(uzzel** sfl)
+    {
+        if (*sfl == NULL) return;
+        clear_work(&((*sfl)->next));
+        delete *sfl;
+        *sfl = NULL;
+        return;
+    }
+
+listt::listt ()
+    {
+        start = NULL;
+    }
+
+bool listt:: push_back(int d)
+    {
+        uzzel** sfl = &(this -> start);
+        uzzel* tmp = new uzzel(d);
+        while (*sfl != NULL)
+        {
+            sfl = &((*sfl)->next);
+        }
+        *sfl = tmp;
+        return true;
+    }
+
+int listt:: pop_back()
+    {
+        if (start == NULL) return false;
+
+        uzzel** sfl = &(this -> start);
+        while ((*sfl)->next != NULL)
+        {
+            sfl = &((*sfl)->next);
+        }
+        int e = (*sfl)->data;
+        delete *sfl;
+        *sfl = NULL;
+        return e;
+    }
+
+bool listt::push_forward(int d)
+    {
+        uzzel** sfl = &(this -> start);
+        uzzel* tmp = new uzzel(d);
+        tmp->next = (*sfl);
+        tmp->data = d;
+        *sfl = tmp;
+        return true;
+    }
+
+int listt::pop_forward()
+    {
+        if (start == NULL) return false;
+
+        uzzel** sfl = &(this -> start);
+        uzzel* tmp = (*sfl)->next;
+        int e = (*sfl)->data;
+        delete *sfl;
+        *sfl = tmp;
+        return e;
+    }
+
+bool listt::push_where(unsigned int where, int d)
+    {
+        uzzel** sfl = &(this -> start);
+        uzzel* tmp = new uzzel(d);
+        for (int i = 1; i < where; i++)
+        {
+            if (*sfl == NULL) return false;
+            sfl = &((*sfl)->next);
+        }
+        tmp->next = (*sfl);
+        (*sfl) = tmp;
+        return true;
+    }
+
+bool listt::erase_where(unsigned int where)
+    {
+        uzzel** sfl = &(this -> start);
+        for (int i = 1; i < where; i++)
+        {
+            if (*sfl == NULL) return false;
+            sfl = &((*sfl)->next);
+        }
+        uzzel* tmp = (*sfl)->next;
+        delete (*sfl);
+        (*sfl) = tmp;
+        return true;
+    }
+
+unsigned int listt::size()
+    {
+        uzzel* sfl = this -> start;
+        unsigned int size = 0;
+        while (sfl != NULL)
+        {
+            sfl = (sfl)->next;
+            size++;
+        }
+        return size;
+    }
+
+void listt::clear()
+    {
+        uzzel** sfl = &(this -> start);
+        this ->clear_work(sfl);
+    }
+
+void listt::print()
+    {
+        uzzel* tmp = start;
+        if (!tmp) cout << "empty list";
+        while (tmp != NULL)
+        {
+            cout << tmp->data << " ";
+            tmp = (tmp)->next;
+        }
+        cout << endl<<endl;
+        return;
+    }
+
+listt::~listt()
+    {
+        this -> clear();
+    }
+
+
+void listt::mini_profiler()
 {
-	*sfl = NULL;
-	return true;
+    cout << "//----------------------Push_back(10 elements)----------------------//"<< endl;
+    for (int i = 0; i < 10; this -> push_back(3*i+2),i++) {this -> print();} //я решил попробовать, больше такого не будет,  честно....
+this -> print();
+
+    cout << "//----------------------Pop_back(8 elements)----------------------//"<< endl;
+    for (int i = 0; i < 8; this -> pop_back(),i++) {this -> print();}
+this -> print();
+
+    cout << "//----------------------Push_forward(8 elements)----------------------//"<< endl;
+    for (int i = 0; i < 8; this -> push_forward(5*i + 7),i++) {this -> print();}
+this -> print();
+
+    cout << "//----------------------Pop_forward(1 elements)----------------------//"<< endl;
+    this -> pop_forward();
+this -> print();
+
+    cout << "//----------------------Push 112 to 3rd place----------------------//"<< endl;
+    this -> push_where(3,112);
+this -> print();
+
+    cout << "//----------------------Push 221 to 3rd place/Erase 112 from 4rd place----------------------//"<< endl;
+    this -> push_where(3,221);
+this -> print();
+    this -> erase_where(4);
+this -> print();
+
+    cout << "//----------------------Check size----------------------//"<< endl;
+    cout << this -> size()<<endl;
+
+    cout << "//----------------------Clear list----------------------//"<< endl;
+    this -> clear();
+this -> print();
+
 }
 
-unsigned int size(subforwardlist** sfl)/////////////////////////working
-{
-	unsigned int size = 0;
-	while (*sfl != NULL)
-	{
-		sfl = &((*sfl)->next);
-		size++;
-	}
-	return size;
-}
-
-bool push_back(subforwardlist** sfl, int d)//////////////////////////working
-{
-	subforwardlist* tmp = new subforwardlist;
-	tmp->data = d;
-	tmp->next = NULL;
-	subforwardlist* tmp1 = *sfl;
-	while (*sfl != NULL)
-	{
-		sfl = &((*sfl)->next);
-	}
-	*sfl = tmp;
-	return true;
-}
-
-int pop_back(subforwardlist** sfl)////////////////////working
-{
-    if (size(sfl) == 0) return false;
-	int i = 0;
-	subforwardlist** tmp1 = sfl;
-	while ((*sfl) ->next != NULL)
-	{
-		sfl = &((*sfl)->next);
-		i++;
-	}
-    int e = (*sfl)->data;
-	delete *sfl;
-	*sfl= NULL;
-	return e;
-}
-
-bool push_forward(subforwardlist** sfl, int d)/////////////////////working
-{
-	subforwardlist* tmp = new subforwardlist;
-	tmp->next = (*sfl);
-	tmp->data = d;
-	*sfl = tmp;
-	return true;
-}
-
-int pop_forward(subforwardlist** sfl)///////////////////////working
-{
-    if (size(sfl) == 0) return false;
-	subforwardlist* tmp = (*sfl)->next;
-	int e = (*sfl)->data;
-	delete *sfl;
-	*sfl = tmp;
-	return e;
-}
-
-bool push_where(subforwardlist** sfl, unsigned int where, int d)////////////////////working
-{
-    if (where > size(sfl)+1) return false;
-
-	subforwardlist* tmp = new subforwardlist;
-	tmp->data = d;
-	for (int i = 2; i < where; i++)
-	{
-		sfl = &((*sfl)->next);
-	}
-	tmp->next = (*sfl)->next;
-	(*sfl)->next = tmp;
-	return true;
-}
-
-bool erase_where(subforwardlist** sfl, unsigned int where)//////////////////////working
-{
-	for (int i = 2; i < where; i++)
-	{
-		sfl = &((*sfl)->next);
-	}
-	subforwardlist* tmp = (*sfl)->next->next;
-	delete (*sfl)->next;
-	(*sfl)->next = tmp;
-	return true;
-}
-
-void clear(subforwardlist** sfl) ////////////////////////working
-{
-	if (*sfl == NULL) return;
-	clear(&((*sfl)->next));
-	delete *sfl;
-	*sfl = NULL;
-	return;
-}
-
-void print(subforwardlist* sfl) ////////////////////////////working
-{
-	while (sfl != NULL)
-	{
-		cout << sfl->data << " ";
-		sfl = (sfl)->next;
-	}
-	cout << endl;
-	return;
-}
-
+//----------------------------------End of method descriptions-------------------------//
 
 int main()
 {
-	subforwardlist* start;
-	init(&start);
-
-	push_back(&start, 1);
-	push_back(&start, 3);
-	push_back(&start, 6);
-	push_back(&start, 0);
-	push_back(&start, 8);
-	push_back(&start, 78);
-	push_back(&start, 9);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-	pop_back(&start);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-	pop_forward(&start);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-	push_forward(&start,2);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-	push_where(&start, 3, 5000);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-	erase_where(&start, 3);
-	cout << size(&start) << endl;
-	print(start);
-	cout << endl;
-
-    clear(&start);
-    cout << size(&start) << endl;
-	print(start);
-	return 0;
+    listt l;
+    l.mini_profiler();
+    return 0;
 }
+
