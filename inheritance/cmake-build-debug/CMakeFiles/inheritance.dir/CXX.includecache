@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/main.cpp
+iostream
+-
+subvector.h
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subvector.h
+subcontainer.h
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subcontainer.h
+subforwardlist.h
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subforwardlist.h
+
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subcontainer.h
+
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subforwardlist.h
+iostream
+-
+subcontainer.h
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subcontainer.h
+
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subvector.h
+subcontainer.h
+/Users/karimvafin/Documents/Repositories/MIPT/Subcontainers-1/inheritance/subcontainer.h
+
